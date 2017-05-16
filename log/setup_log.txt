@@ -1,0 +1,199 @@
+2017-05-16 20:46:02,498 - WARNING -                 setup_irods.py: 162 - Warning: Hostname `23ab50e17885` should be a fully qualified domain name.
+2017-05-16 20:46:02,499 -   DEBUG -                         lib.py:  56 - Calling ['/usr/sbin/hostname_resolves_to_local_address', '23ab50e17885'] with options:
+{'shell': False, 'stderr': -1, 'stdout': -1}
+2017-05-16 20:46:02,520 -   DEBUG -                         lib.py: 129 - Command ['/usr/sbin/hostname_resolves_to_local_address', '23ab50e17885'] returned with code 0.
+stdout:
+  yes
+2017-05-16 20:46:02,526 -    INFO -               configuration.py: 270 - Updating /var/lib/irods/VERSION.json...
+2017-05-16 20:46:02,526 -    INFO -                 setup_irods.py: 191 - The iRODS service account name needs to be defined.
+2017-05-16 20:46:02,530 -   DEBUG -                         lib.py: 495 - iRODS user [irods]: 
+2017-05-16 20:46:02,531 -   DEBUG -                         lib.py: 500 - User input: irods
+2017-05-16 20:46:02,531 -   DEBUG -                         lib.py: 495 - iRODS group [irods]: 
+2017-05-16 20:46:02,531 -   DEBUG -                         lib.py: 500 - User input: irods
+2017-05-16 20:46:02,531 -    INFO -                 setup_irods.py: 202 - 
++--------------------------------+
+| Setting up the service account |
++--------------------------------+
+
+2017-05-16 20:46:02,531 -    INFO -                 setup_irods.py: 208 - Existing Group Detected: irods
+2017-05-16 20:46:02,532 -   DEBUG -                         lib.py:  56 - Calling ['id', 'irods'] with options:
+{'shell': False, 'stderr': -1, 'stdout': -1}
+2017-05-16 20:46:02,535 -   DEBUG -                         lib.py: 129 - Command ['id', 'irods'] returned with code 0.
+stdout:
+  uid=996(irods) gid=996(irods) groups=996(irods)
+2017-05-16 20:46:02,535 -    INFO -                 setup_irods.py: 223 - Existing Account Detected: irods
+2017-05-16 20:46:02,536 -    INFO -                 setup_irods.py: 230 - Setting owner of /var/lib/irods to irods:irods
+2017-05-16 20:46:02,594 -    INFO -                 setup_irods.py: 241 - Setting owner of /etc/irods to irods:irods
+2017-05-16 20:46:02,595 -   DEBUG -                 setup_irods.py: 251 - Setting uid bit on /var/lib/irods/clients/bin/genOSAuth
+2017-05-16 20:46:02,597 -   DEBUG -                         lib.py:  56 - Calling ['su', '-', 'irods', '-c', 'python -c "from __future__ import print_function; import os; import json; print(json.dumps(dict(os.environ)))"'] with options:
+{'shell': False, 'stderr': -1, 'stdout': -1}
+2017-05-16 20:46:02,625 -   DEBUG -                         lib.py: 129 - Command ['su', '-', 'irods', '-c', 'python -c "from __future__ import print_function; import os; import json; print(json.dumps(dict(os.environ)))"'] returned with code 0.
+stdout:
+  {"TERM": "xterm", "SHELL": "/bin/bash", "SHLVL": "1", "HOSTNAME": "23ab50e17885", "HISTSIZE": "1000", "HISTCONTROL": "ignoredups", "PWD": "/var/lib/irods", "LOGNAME": "irods", "USER": "irods", "MAIL": "/var/spool/mail/irods", "PATH": "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin", "HOME": "/var/lib/irods", "_": "/bin/python"}
+2017-05-16 20:46:02,627 -   DEBUG -               configuration.py: 415 - /etc/irods/server_config.json does not exist, copying from template file /var/lib/irods/packaging/server_config.json.template
+2017-05-16 20:46:02,628 -   DEBUG -               configuration.py: 417 - Loading /etc/irods/server_config.json into dictionary
+2017-05-16 20:46:02,629 -   DEBUG -                         lib.py: 495 - iRODS server's role:
+1. provider
+2. consumer
+Please select a number or choose 0 to enter a new value [1]: 
+2017-05-16 20:46:02,629 -   DEBUG -                         lib.py: 500 - User input: 1
+2017-05-16 20:46:02,630 -    INFO -               configuration.py: 270 - Updating /etc/irods/server_config.json...
+2017-05-16 20:46:02,659 -    INFO -                 setup_irods.py: 114 - 
++-----------------------------------------+
+| Configuring the database communications |
++-----------------------------------------+
+
+2017-05-16 20:46:02,661 -   DEBUG -          database_interface.py:  88 - setup_database_config has been called with database type 'postgres'.
+2017-05-16 20:46:02,661 -    INFO -          database_interface.py:  90 - You are configuring an iRODS database plugin. The iRODS server cannot be started until its database has been properly configured.
+
+2017-05-16 20:46:02,661 -   DEBUG -                         lib.py:  56 - Calling ['odbcinst', '-q', '-d'] with options:
+{'shell': False, 'stderr': -1, 'stdout': -1}
+2017-05-16 20:46:02,663 -   DEBUG -                         lib.py: 129 - Command ['odbcinst', '-q', '-d'] returned with code 0.
+stdout:
+  [PostgreSQL]
+  [MySQL]
+2017-05-16 20:46:02,664 -   DEBUG -                         lib.py: 495 - ODBC driver for postgres [PostgreSQL]: 
+2017-05-16 20:46:02,664 -   DEBUG -                         lib.py: 500 - User input: PostgreSQL
+2017-05-16 20:46:02,666 -   DEBUG -               configuration.py:  68 - No driver found in the database config, attempting to retrieve the one in the odbc ini file at "/var/lib/irods/.odbc.ini"...
+2017-05-16 20:46:02,667 -   DEBUG -               configuration.py:  74 - No odbc.ini file present
+2017-05-16 20:46:02,667 -   DEBUG -               configuration.py:  81 - Unable to retrieve "Driver" field from odbc ini file
+2017-05-16 20:46:02,667 -   DEBUG -                         lib.py: 495 - Database server's hostname or IP address [localhost]: 
+2017-05-16 20:46:02,667 -   DEBUG -                         lib.py: 500 - User input: localhost
+2017-05-16 20:46:02,667 -   DEBUG -                         lib.py: 495 - Database server's port [5432]: 
+2017-05-16 20:46:02,667 -   DEBUG -                         lib.py: 500 - User input: 5432
+2017-05-16 20:46:02,667 -   DEBUG -                         lib.py: 495 - Database name [ICAT]: 
+2017-05-16 20:46:02,667 -   DEBUG -                         lib.py: 500 - User input: ICAT
+2017-05-16 20:46:02,667 -   DEBUG -                         lib.py: 495 - Database username [irods]: 
+2017-05-16 20:46:02,668 -   DEBUG -                         lib.py: 500 - User input: irods
+2017-05-16 20:46:02,668 -   DEBUG -                         lib.py: 495 - 
+-------------------------------------------
+Database Type: postgres
+ODBC Driver:   PostgreSQL
+Database Host: localhost
+Database Port: 5432
+Database Name: ICAT
+Database User: irods
+-------------------------------------------
+
+Please confirm [yes]: 
+2017-05-16 20:46:02,668 -   DEBUG -                         lib.py: 500 - User input: yes
+2017-05-16 20:46:02,669 -   DEBUG -                         lib.py: 495 - Database password: 
+2017-05-16 20:46:02,669 -    INFO -               configuration.py: 270 - Updating /etc/irods/server_config.json...
+2017-05-16 20:46:02,673 -   DEBUG -               configuration.py: 417 - Loading /etc/irods/server_config.json into dictionary
+2017-05-16 20:46:02,676 -   DEBUG -                         lib.py:  56 - Calling ['odbcinst', '-i', '-s', '-h', '-r'] with options:
+{'env': 'HIDDEN', 'shell': False, 'stderr': -1, 'stdin': -1, 'stdout': -1}
+2017-05-16 20:46:02,684 -   DEBUG -                         lib.py: 129 - Command ['odbcinst', '-i', '-s', '-h', '-r'] returned with code 0.
+stdin:
+  [iRODS Catalog]
+  Driver=PostgreSQL
+  Description=iRODS Catalog
+  Trace=No
+  Database=ICAT
+  TraceFile=
+  Servername=localhost
+  FakeOidIndex=No
+  ShowOidColumn=No
+  RowVersioning=No
+  CommLog=0
+  ReadOnly=No
+  Debug=0
+  ConnSettings=
+  Port=5432
+  Ksqo=0
+  ShowSystemTables=No
+stdout:
+  odbcinst: Sections and Entries from stdin have been added to ODBC.INI
+2017-05-16 20:46:02,700 -    INFO -            database_connect.py: 248 - Listing database tables...
+2017-05-16 20:46:02,701 -   DEBUG -            database_connect.py: 250 - List of tables:
+[]
+2017-05-16 20:46:02,702 -   DEBUG -                         lib.py: 495 - Salt for passwords stored in the database: 
+2017-05-16 20:46:02,702 -    INFO -               configuration.py: 270 - Updating /etc/irods/server_config.json...
+2017-05-16 20:46:02,703 -    INFO -                 setup_irods.py: 267 - 
++--------------------------------+
+| Configuring the server options |
++--------------------------------+
+
+2017-05-16 20:46:02,705 -   DEBUG -               configuration.py: 417 - Loading /etc/irods/server_config.json into dictionary
+2017-05-16 20:46:02,706 -   DEBUG -                         lib.py: 495 - iRODS server's zone name [tempZone]: 
+2017-05-16 20:46:02,706 -   DEBUG -                         lib.py: 500 - User input: tempZone
+2017-05-16 20:46:02,706 -   DEBUG -                         lib.py: 495 - iRODS server's port [1247]: 
+2017-05-16 20:46:02,706 -   DEBUG -                         lib.py: 500 - User input: 1247
+2017-05-16 20:46:02,706 -   DEBUG -                         lib.py: 495 - iRODS port range (begin) [20000]: 
+2017-05-16 20:46:02,706 -   DEBUG -                         lib.py: 500 - User input: 20000
+2017-05-16 20:46:02,707 -   DEBUG -                         lib.py: 495 - iRODS port range (end) [20199]: 
+2017-05-16 20:46:02,707 -   DEBUG -                         lib.py: 500 - User input: 20199
+2017-05-16 20:46:02,707 -   DEBUG -                         lib.py: 495 - Control Plane port [1248]: 
+2017-05-16 20:46:02,707 -   DEBUG -                         lib.py: 500 - User input: 1248
+2017-05-16 20:46:02,707 -   DEBUG -                         lib.py: 495 - Schema Validation Base URI (or off) [file:///var/lib/irods/configuration_schemas]: 
+2017-05-16 20:46:02,707 -   DEBUG -                         lib.py: 500 - User input: file:///var/lib/irods/configuration_schemas
+2017-05-16 20:46:02,708 -   DEBUG -                         lib.py: 495 - iRODS server's administrator username [rods]: 
+2017-05-16 20:46:02,708 -   DEBUG -                         lib.py: 500 - User input: rods
+2017-05-16 20:46:02,708 -   DEBUG -                         lib.py: 495 - 
+-------------------------------------------
+Zone name:                  tempZone
+iRODS server port:          1247
+iRODS port range (begin):   20000
+iRODS port range (end):     20199
+Control plane port:         1248
+Schema validation base URI: file:///var/lib/irods/configuration_schemas
+iRODS server administrator: rods
+-------------------------------------------
+
+Please confirm [yes]: 
+2017-05-16 20:46:02,708 -   DEBUG -                         lib.py: 500 - User input: yes
+2017-05-16 20:46:02,708 -   DEBUG -                         lib.py: 495 - iRODS server's zone key: 
+2017-05-16 20:46:02,708 -   DEBUG -                         lib.py: 495 - iRODS server's negotiation key (32 characters): 
+2017-05-16 20:46:02,708 -   DEBUG -                         lib.py: 495 - Control Plane key (32 characters): 
+2017-05-16 20:46:02,709 -    INFO -               configuration.py: 270 - Updating /etc/irods/server_config.json...
+2017-05-16 20:46:02,710 -    INFO -                 setup_irods.py: 368 - 
++-----------------------------------+
+| Setting up the client environment |
++-----------------------------------+
+
+2017-05-16 20:46:02,710 -   DEBUG -                         lib.py: 495 - iRODS server's administrator password: 
+2017-05-16 20:46:02,712 -   DEBUG -               configuration.py: 210 - Writing password file /var/lib/irods/.irods/.irodsA
+2017-05-16 20:46:02,717 -    INFO -               configuration.py: 270 - Updating /var/lib/irods/.irods/irods_environment.json...
+2017-05-16 20:46:02,717 -    INFO -                 setup_irods.py: 179 - 
++--------------------------+
+| Setting up default vault |
++--------------------------+
+
+2017-05-16 20:46:02,718 -   DEBUG -                         lib.py: 495 - iRODS Vault directory [/var/lib/irods/Vault]: 
+2017-05-16 20:46:02,718 -   DEBUG -                         lib.py: 500 - User input: /var/lib/irods/iRODS/Vault
+2017-05-16 20:46:02,718 -    INFO -                 setup_irods.py: 122 - 
++-------------------------+
+| Setting up the database |
++-------------------------+
+
+2017-05-16 20:46:02,719 -   DEBUG -                         lib.py:  56 - Calling ['odbcinst', '-i', '-s', '-h', '-r'] with options:
+{'env': 'HIDDEN', 'shell': False, 'stderr': -1, 'stdin': -1, 'stdout': -1}
+2017-05-16 20:46:02,727 -   DEBUG -                         lib.py: 129 - Command ['odbcinst', '-i', '-s', '-h', '-r'] returned with code 0.
+stdin:
+  [iRODS Catalog]
+  Driver=PostgreSQL
+  Description=iRODS Catalog
+  Trace=No
+  Database=ICAT
+  TraceFile=
+  Servername=localhost
+  FakeOidIndex=No
+  ShowOidColumn=No
+  RowVersioning=No
+  CommLog=0
+  ReadOnly=No
+  Debug=0
+  ConnSettings=
+  Port=5432
+  Ksqo=0
+  ShowSystemTables=No
+stdout:
+  odbcinst: Sections and Entries from stdin have been added to ODBC.INI
+2017-05-16 20:46:02,733 -    INFO -            database_connect.py: 248 - Listing database tables...
+2017-05-16 20:46:02,734 -   DEBUG -            database_connect.py: 250 - List of tables:
+[]
+2017-05-16 20:46:02,734 -    INFO -            database_connect.py: 320 - Creating database tables...
+2017-05-16 20:46:02,735 -   DEBUG -            database_connect.py: 223 - Executing SQL in /var/lib/irods/packaging/sql/icatSysTables.sql
+2017-05-16 20:46:02,735 -   DEBUG -            database_connect.py: 229 - Executing SQL statement:
+create table R_ZONE_MAIN ( zone_id bigint not null, zone_name varchar(250) not null, zone_type_name varchar(250) not null, zone_conn_string varchar(1000), r_comment varchar(1000), create_ts varchar(32), modify_ts varchar(32)) ;
+
+2017-05-16 20:46:02,736 -   DEBUG -          database_interface.py:  28 - Rolling back database changes...
