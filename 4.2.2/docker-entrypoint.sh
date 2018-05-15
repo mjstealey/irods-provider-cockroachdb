@@ -16,16 +16,16 @@ _update_uid_gid() {
 ### initialize ICAT database
 _database_setup() {
   cat > /init_icat.sql <<EOF
-CREATE USER irods WITH PASSWORD '${IRODS_DATABASE_PASSWORD}';
+CREATE USER ${IRODS_DATABASE_USER_NAME} WITH PASSWORD '${IRODS_DATABASE_PASSWORD}';
 CREATE DATABASE "${IRODS_DATABASE_NAME}";
-GRANT ALL PRIVILEGES ON DATABASE "${IRODS_DATABASE_NAME}" TO irods;
+GRANT ALL PRIVILEGES ON DATABASE "${IRODS_DATABASE_NAME}" TO ${IRODS_DATABASE_USER_NAME};
 EOF
   cat /init_icat.sql
   PGPASSWORD=${POSTGRES_PASSWORD} psql -U ${POSTGRES_USER} -h \
     ${IRODS_DATABASE_SERVER_HOSTNAME} -a -f /init_icat.sql
 }
 
-### repopulate contents of /var/lib/irods if external volume mount is used
+### populate contents of /var/lib/irods if external volume mount is used
 _irods_tgz() {
   cp /irods.tar.gz /var/lib/irods/irods.tar.gz
   cd /var/lib/irods/
@@ -33,6 +33,16 @@ _irods_tgz() {
   tar -zxvf irods.tar.gz
   cd /
   rm -f /var/lib/irods/irods.tar.gz
+}
+
+### populate contents of /var/lib/postgresql/data if external volume mount is used
+_postgresql_tgz() {
+  cp /postgresql.tar.gz /var/lib/postgresql/data/postgresql.tar.gz
+  cd /var/lib/postgresql/data
+  echo "!!! populating /var/lib/postgresql/data with initial contents !!!"
+  tar -zxvf postgresql.tar.gz
+  cd /
+  rm -f /var/lib/postgresql/data/postgresql.tar.gz
 }
 
 ### generate iRODS config file
@@ -65,11 +75,27 @@ ${IRODS_VAULT_DIRECTORY}
 EOF
 }
 
-# tail -f /dev/null
+### update hostname if it has changed across docker containers using volume mounts
+_hostname_update() {
+  local EXPECTED_HOSTNAME=$(sed -e 's/^"//' -e 's/"//' \
+    <<<$(cat /var/lib/irods/.irods/irods_environment.json | \
+    jq .irods_host))
+  if [[ "${EXPECTED_HOSTNAME}" != $(hostname) ]]; then
+    echo "### Updating hostname ###"
+    jq '.irods_host = "'$(hostname)'"' \
+      /var/lib/irods/.irods/irods_environment.json|sponge \
+      /var/lib/irods/.irods/irods_environment.json
+    jq '.catalog_provider_hosts[] = "'$(hostname)'"' \
+      /etc/irods/server_config.json|sponge \
+      /etc/irods/server_config.json
+    echo "UPDATE r_resc_main SET resc_net = '"$(hostname)"' WHERE resc_net = '${EXPECTED_HOSTNAME}';" > update_hostname.sql
+    su irods PGPASSWORD=temppassword -c 'psql -d ICAT -U '${IRODS_DATABASE_USER_NAME}' -a -f update_hostname.sql'
+  fi
+}
 
 ### main ###
 
-### external volume mount will be empty on initial run
+### external volume mounts will be empty on initial run
 if [[ ! -f /var/lib/irods/irodsctl ]]; then
   _irods_tgz
 fi
@@ -88,7 +114,6 @@ if [[ ! -d /var/lib/irods/iRODS ]]; then
   ### initialize iRODS if being run for the first time
   _database_setup
   _generate_config
-  export PGPASSWORD=${IRODS_DATABASE_PASSWORD}
   python /var/lib/irods/scripts/setup_irods.py < /irods.config
   _update_uid_gid
 else
@@ -97,10 +122,12 @@ else
     echo "Postgres is unavailable - sleeping"
     sleep 2
   done
+  _hostname_update
   service irods start
+  su irods -c 'echo ${IRODS_SERVER_ADMINISTRATOR_PASSWORD} | iinit'
 fi
 
-### Keep process running forever
+### Keep a foreground process running forever
 tail -f /dev/null
 
 exit 0;

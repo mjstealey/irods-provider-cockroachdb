@@ -38,7 +38,9 @@ services:
     hostname: irods.local.dev
     networks:
       - irods
-    command: -i -v run_irods
+    # volumes:
+    #   - ./var_irds:/var/lib/irods
+    #   - ./etc_irods:/etc/irods
 
   database:
     image: postgres:10
